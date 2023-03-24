@@ -1,0 +1,157 @@
+ident = @{ !NUMBER ~ (ASCII_ALPHANUMERIC | "_")+ }
+
+WHITESPACE = _{ " " | "\r" | "\t" | "\n" }
+
+uint = @{ ASCII_NONZERO_DIGIT ~ ("_"? ~ ASCII_DIGIT)* }
+
+upair = {
+    ident ~ ":" ~ uint
+}
+
+xpair = {
+    ident ~ ":" ~ expr
+}
+
+blist = {
+    "(" ~ ")"
+  | "(" ~ upair ~ ("," ~ upair)* ~ ","? ~ ")" 
+}
+
+clist = {
+    "{" ~ "}"
+  | "{" ~ xpair ~ ("," ~ xpair)* ~ ","? ~ "}"
+}
+
+clip = {
+    "clip" ~ "(" ~ expr ~ "," ~ expr ~ "," ~ expr ~ ")"
+}
+
+min = {
+    "min" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+max = {
+    "max" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+norm = {
+    "norm" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+skwn = {
+    "skewnorm" ~ "(" ~ expr ~ "," ~ expr ~ "," ~ expr ~ ")"
+}
+
+logn = {
+    "logn" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+log2 = {
+    "log2" ~ "(" ~ expr ~ ")"
+}
+
+ln = {
+    "ln" ~ "(" ~ expr ~ ")"
+}
+
+abs = {
+    "abs" ~ "(" ~ expr ~ ")"
+}
+
+sqrt = {
+    "sqrt" ~ "(" ~ expr ~ ")"
+}
+
+eq = {
+    // returns 1 if true, 0 for else
+    "eq" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+lt = {
+    // returns 1 if less than, 0 for else
+    "lt" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+le = {
+    // returns 1 if less than or equal, 0 for else
+    "le" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+gt = {
+    // returns 1 if greater than, 0 for else
+    "gt" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+ge = {
+    // returns 1 if greater than or equal, 0 for else
+    "ge" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+if1 = {
+    // returns the right if left is 1, left for else
+    "if1" ~ "(" ~ expr ~ "," ~ expr ~ ")"
+}
+
+fcall = _{
+    clip
+  | min
+  | max
+  | norm
+  | skwn
+  | logn
+  | log2
+  | ln
+  | abs
+  | sqrt
+  | eq
+  | gt
+  | ge
+  | lt
+  | le
+  | if1
+}
+
+number = @{
+    ("0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*) ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?
+    | "." ~ ASCII_DIGIT+
+}
+
+atom = _{
+    fcall
+  | number
+  | block
+}
+
+bin_op = _{ add | subtract | multiply | divide | power }
+
+add = { "+" }
+
+subtract = { "-" }
+
+multiply = { "*" }
+
+divide = { "/" }
+
+power = { "^" }
+
+neg = {
+    "-" ~ atom
+}
+
+expr = { (neg | atom) ~ (bin_op ~ atom)* }
+
+block = _{
+    "(" ~ expr ~ ")"
+}
+
+product_config = {
+    ident ~ "@" ~ uint ~ "$" ~ uint ~ blist ~ "=>" ~ uint ~ ":" ~ ident ~ clist
+}
+
+item_config = {
+    ident ~ "@" ~ uint ~ "$" ~ uint ~ blist ~ "->" ~ uint ~ ":" ~ ident
+}
+
+factory = _{
+    (product_config | item_config)
+}
