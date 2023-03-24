@@ -3,10 +3,9 @@ extern crate pest;
 extern crate pest_derive;
 
 #[derive(Parser)]
-#[grammar = "./rule.pest"]
+#[grammar = "rule.pest"]
 /// FCParser = Factory Config Parser
 pub struct FCParser;
-pub struct TEST {}
 use pest::{iterators::*, pratt_parser::PrattParser};
 
 lazy_static::lazy_static! {

@@ -26,14 +26,26 @@ impl Expr {
             }
             Expr::Norm { mean, std } => {
                 let mean = mean.eval_once(rng);
-                let std = std.eval_once(rng);
+                let mut std = std.eval_once(rng);
+                if !std.is_finite(){
+                    std = 1.;
+                }
                 let x = Normal::new(mean, std).unwrap();
                 x.sample(rng)
             }
             Expr::Skewnorm { loc, scale, shape } => {
                 let loc = loc.eval_once(rng);
-                let scale = scale.eval_once(rng);
-                let shape = shape.eval_once(rng);
+                let mut scale = scale.eval_once(rng);
+                let mut shape = shape.eval_once(rng);
+                if scale <= 0.{
+                    scale = 1.;
+                }
+                if !scale.is_finite(){
+                    scale = 1.;
+                }
+                if !shape.is_finite(){
+                    shape = 1.;
+                }
                 let x = SkewNormal::new(loc, scale, shape).unwrap();
                 x.sample(rng)
             }

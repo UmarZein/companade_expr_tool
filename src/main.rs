@@ -1,5 +1,5 @@
 use pest::{iterators::*, Parser};
-use rusty::*;
+use companade_expr_tool::*;
 
 #[cfg(test)]
 mod test {
