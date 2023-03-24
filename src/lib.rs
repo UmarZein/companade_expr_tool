@@ -3,7 +3,7 @@ extern crate pest;
 extern crate pest_derive;
 
 #[derive(Parser)]
-#[grammar = "rule.pest"]
+#[grammar = "./rule.pest"]
 /// FCParser = Factory Config Parser
 pub struct FCParser;
 use pest::{iterators::*, pratt_parser::PrattParser};

@@ -155,3 +155,8 @@ item_config = {
 factory = _{
     (product_config | item_config)
 }
+
+factories = {
+    SOI ~ factory+
+}
+

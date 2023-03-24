@@ -6,6 +6,20 @@ pub enum ParseError {
     Placeholder,
 }
 
+pub fn parse_configs(pairs: Pair<Rule>) -> Result<Vec<FactoryConfig>,ParseError> {
+    match &pairs.as_rule(){
+        Rule::factories => {
+            let tmp = pairs.into_inner().map(|x|parse_config(x));
+            let mut buff = vec![];
+            for i in tmp{
+                buff.push(i?);
+            }
+            return Ok(buff)
+        },
+        _ => Err(ParseError::Placeholder)
+    }
+}
+
 pub fn parse_config(pairs: Pair<Rule>) -> Result<FactoryConfig, ParseError> {
     //let mut res = FactoryConfig::blank_item();
     let mut inner = pairs.clone().into_inner().into_iter();
